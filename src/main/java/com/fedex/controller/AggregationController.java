@@ -18,7 +18,10 @@ public class AggregationController {
     public AggregationController(AggregationService aggregationService) {
         this.aggregationService = aggregationService;
     }
-
+    /**
+     *  This method is used to trigger the GET call to the aggregation api with the respective parameters of the external clients
+     * This methods combines the reqponse of the external clients and return Aggregation Response to the caller.
+     * */
     @GetMapping("/aggregation")
     public AggregationResponse aggregate(@RequestParam(required = false) List<String> pricing,
                                          @RequestParam(required = false) List<String> track, @RequestParam(required = false) List<String> shipments) throws TimeoutException {

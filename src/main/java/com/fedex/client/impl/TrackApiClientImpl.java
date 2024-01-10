@@ -27,13 +27,17 @@ public class TrackApiClientImpl extends ApiClientTemplate<Map<String, String>> i
     protected Logger getLogger() {
         return logger;
     }
-
+    /**
+     * This method defines the response type of tracking client
+     * */
     @Override
     protected ParameterizedTypeReference<Map<String, String>> getResponseType() {
         return new ParameterizedTypeReference<Map<String, String>>() {
         };
     }
-
+    /**
+     * This method is to invoke the tracking api via the template
+     * */
     @Override
     public Map<String, String> getTrackingStatus(List<String> orderNumbers) {
         return callApi(orderNumbers);

@@ -27,12 +27,17 @@ public class PricingApiClientImpl extends ApiClientTemplate<Map<String, Double>>
         return logger;
     }
 
+    /**
+     * This method defines the response type of pricing client
+     * */
     @Override
     protected ParameterizedTypeReference<Map<String, Double>> getResponseType() {
         return new ParameterizedTypeReference<Map<String, Double>>() {
         };
     }
-
+    /**
+     * This method is to invoke the pricing api via the template
+     * */
     @Override
     public Map<String, Double> getPricing(List<String> countries) {
         return callApi(countries);

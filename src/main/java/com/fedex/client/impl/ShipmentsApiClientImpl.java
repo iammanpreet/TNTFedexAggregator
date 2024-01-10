@@ -28,13 +28,17 @@ public class ShipmentsApiClientImpl extends ApiClientTemplate<Map<String, List<S
 
         return logger;
     }
-
+    /**
+     * This method defines the response type of shipments client
+     * */
     @Override
     protected ParameterizedTypeReference<Map<String, List<String>>> getResponseType() {
         return new ParameterizedTypeReference<Map<String, List<String>>>() {
         };
     }
-
+    /**
+     * This method is to invoke the shipments api via the template
+     * */
     @Override
     public Map<String, List<String>> getProducts(List<String> orderNumbers) {
         return callApi(orderNumbers);

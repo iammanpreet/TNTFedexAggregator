@@ -16,7 +16,9 @@ public class ShipmentsApiFunction implements ApiFunction<AggregationResponse> {
     public ShipmentsApiFunction(AggregationService aggregationService) {
         this.aggregationService = aggregationService;
     }
-
+    /**
+     * This method defines the api funtion to execute by enqueuing the shipments api call
+     * */
     @Override
     public AggregationResponse apply(List<String> orderNumbers) {
         return aggregationService.getAggregatedData(Collections.emptyList(), Collections.emptyList(), orderNumbers);

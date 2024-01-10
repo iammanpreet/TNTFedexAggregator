@@ -11,6 +11,11 @@ import java.util.Map;
 
 @ControllerAdvice
 public class AggregationControllerException {
+    /**
+     * This method is used to define an aggregated Timeout exception handler.
+     * if we get an exception of Aggregation Timeout in the controller layer,
+     * then the below created response is returned to the caller.
+     * */
     @ExceptionHandler(AggregationTimeoutException.class)
     public ResponseEntity<Object> handleTimeoutException(AggregationTimeoutException ex, WebRequest request) {
         Map<String, Object> body = new HashMap<>();

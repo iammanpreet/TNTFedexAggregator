@@ -16,7 +16,9 @@ public class PricingApiFunction implements ApiFunction<AggregationResponse> {
     public PricingApiFunction(AggregationService aggregationService) {
         this.aggregationService = aggregationService;
     }
-
+    /**
+     * This method defines the api funtion to execute by enqueuing the pricing api call
+     * */
     @Override
     public AggregationResponse apply(List<String> orderNumbers) {
         return aggregationService.getAggregatedData(orderNumbers, Collections.emptyList(), Collections.emptyList());

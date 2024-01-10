@@ -39,7 +39,10 @@ public class AggregationServiceImpl implements AggregationService {
         this.pricingApiClient = pricingApiClient;
         this.apiClientConfig = apiClientConfig;
     }
-
+    /**
+     * This method is used to consolidate the responses from the respective external clients
+     * and combines the response to the Aggregation response and return the same to the caller.
+     * */
     @SlaEnforcement(threshold = 10000)
     public AggregationResponse getAggregatedData(List<String> pricingCountryCodes, List<String> trackOrderNumbers,
                                                  List<String> shipmentOrderNumbers) {
@@ -69,7 +72,9 @@ public class AggregationServiceImpl implements AggregationService {
         }
         return response;
     }
-
+    /**
+     * This method executes the track api client request in an asynchronous way and fetch the respective responses.
+     * */
     private CompletableFuture<Map<String, String>> getTrackCompletableFuture(List<String> trackOrderNumbers) {
         return (trackOrderNumbers != null && !trackOrderNumbers.isEmpty()) ?
                 CompletableFuture
@@ -82,7 +87,9 @@ public class AggregationServiceImpl implements AggregationService {
                         }) :
                 CompletableFuture.completedFuture(Collections.emptyMap());
     }
-
+    /**
+     * This method executes the shipments api client request in an asynchronous way and fetch the respective responses.
+     * */
     private CompletableFuture<Map<String, List<String>>> getShipmentsCompletableFuture(List<String> shipmentOrderNumbers) {
         return (shipmentOrderNumbers != null && !shipmentOrderNumbers.isEmpty()) ?
                 CompletableFuture
@@ -93,7 +100,9 @@ public class AggregationServiceImpl implements AggregationService {
                             return Collections.emptyMap();
                         }) : CompletableFuture.completedFuture(Collections.emptyMap());
     }
-
+    /**
+     * This method executes the pricing api client request in an asynchronous way and fetch the respective responses.
+     * */
     private CompletableFuture<Map<String, Double>> getPricingCompletableFuture(List<String> pricingCountryCodes) {
         return (pricingCountryCodes != null && !pricingCountryCodes.isEmpty()) ?
                 CompletableFuture

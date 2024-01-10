@@ -15,7 +15,9 @@ import org.springframework.stereotype.Component;
 public class AggregationSLAAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(AggregationSLAAspect.class);
-
+    /**
+     * This method defines the implementation to be executed for the method which is wrapped under SlaEnforcement annotation
+     * */
     @Around("@annotation(slaEnforcement)")
     public Object enforceSLA(ProceedingJoinPoint joinPoint, SlaEnforcement slaEnforcement) throws Throwable {
         long startTime = System.currentTimeMillis();
@@ -31,6 +33,9 @@ public class AggregationSLAAspect {
         }
     }
 
+    /**
+     * This method checks if the SLA is breached or not
+     * */
     private void enforceSLA(long executionTime, long slaThreshold) {
         if (executionTime > slaThreshold) {
             LoggerUtils.logError(logger, "SLA violation! Execution time: {} ms", executionTime);
@@ -38,6 +43,9 @@ public class AggregationSLAAspect {
         }
     }
 
+    /**
+     * This method is used to log the total execution time for the request
+     * */
     private void logExecutionTime(ProceedingJoinPoint joinPoint, long executionTime) {
         LoggerUtils.logInfo(logger, "{} executed in {} ms", joinPoint.getSignature(), executionTime);
     }

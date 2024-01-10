@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SlaEnforcement {
     /**
+     * An annotation to enforce the SLA
      * Default SLA threshold is 10 sec
      */
     long threshold() default 10000;

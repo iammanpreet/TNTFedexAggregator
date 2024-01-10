@@ -21,7 +21,10 @@ public class ShipmentsQueueApiController {
         this.apiFunction = shipmentsApiFunction;
         this.apiQueueService = apiQueueService;
     }
-
+    /**
+     * This method is used to trigger the POST call to the Shipments api with the respective parameters of the shipments clients
+     * This methods enqueues the request for the shipments queue, and acknowledge with the response.
+     * */
     @PostMapping("/api/shipments/request")
     public ResponseEntity<Object> queueShipmentsApiRequest(@RequestBody List<String> orderNumbers) {
         return ResponseEntity.ok().body(apiQueueService.enqueueRequest(ApiName.SHIPMENTS, orderNumbers, apiFunction));

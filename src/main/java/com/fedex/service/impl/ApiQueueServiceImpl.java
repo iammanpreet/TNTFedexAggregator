@@ -37,23 +37,32 @@ public class ApiQueueServiceImpl implements ApiQueueService {
         initializeQueues();
         schedulePeriodicTasks();
     }
-
+    /**
+     * This method creates the queues for each api client.
+     * */
     private void initializeQueues() {
         for (ApiName apiName : ApiName.values()) {
             apiQueues.put(apiName, new ConcurrentLinkedQueue<>());
         }
     }
-
+    /**
+     * This method creates a fixed rate scheduler for AS-3 implementation
+     * */
     private void schedulePeriodicTasks() {
         for (ApiName apiName : ApiName.values()) {
             scheduler.scheduleAtFixedRate(() -> processApiRequestQueue(apiName, apiQueues.get(apiName), null), 0, 5, TimeUnit.SECONDS);
         }
     }
-
+    /**
+     * This method is triggered by the enqueue api, to enqueue the request in the respective queues
+     * */
     public Object enqueueRequest(ApiName api, List<String> orderNumbers, ApiFunction<AggregationResponse> apiFunction) {
         return processApiRequests(api, orderNumbers, apiFunction);
     }
-
+    /**
+     * This method is used to process the enqueued requests from the respective queues
+     * based on batch size or either scheduling the run
+     * */
     private Object processApiRequests(ApiName api, List<String> orderNumbers, ApiFunction<AggregationResponse> apiFunction) {
         CompletableFuture<AggregationResponse> future = new CompletableFuture<>();
 
@@ -73,7 +82,9 @@ public class ApiQueueServiceImpl implements ApiQueueService {
 
         return future;
     }
-
+    /**
+     * This method processes the enqueued requests based on the business logic in the stories
+     * */
     public void processApiRequestQueue(ApiName api, Queue<ApiRequest<AggregationResponse>> queue, ApiFunction<AggregationResponse> apiFunction) {
         // Extract order numbers and API function from the queued requests
         List<String> orderNumbers = new ArrayList<>();
@@ -99,6 +110,9 @@ public class ApiQueueServiceImpl implements ApiQueueService {
         scheduler.schedule(() -> processApiRequestQueue(api, queue, apiFunction), 5, TimeUnit.SECONDS);
     }
 
+    /**
+     * This method is used to identify the apifunction based on the apiName
+     * */
     private ApiFunction getApiFunction(ApiName api) {
         switch (api) {
             case PRICING: {

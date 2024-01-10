@@ -23,10 +23,12 @@ public class PricingQueueApiController {
         this.apiFunction = pricingApiFunction;
         this.apiQueueService = apiQueueService;
     }
-
+    /**
+     *  This method is used to trigger the POST call to the Pricing api with the respective parameters of the pricing clients
+     * This methods enqueues the request for the pricing queue, and acknowledge with the response.
+     * */
     @PostMapping("/api/pricing/request")
     public ResponseEntity<Object> queuePricingApiRequest(@RequestBody List<String> orderNumbers) {
         return ResponseEntity.ok().body(apiQueueService.enqueueRequest(ApiName.PRICING, orderNumbers, apiFunction));
-        //return ResponseEntity.accepted().build();
     }
 }

@@ -16,7 +16,9 @@ public class TrackApiFunction implements ApiFunction<AggregationResponse> {
     public TrackApiFunction(AggregationService aggregationService) {
         this.aggregationService = aggregationService;
     }
-
+    /**
+     * This method defines the api funtion to execute by enqueuing the track api call
+     * */
     @Override
     public AggregationResponse apply(List<String> orderNumbers) {
         return aggregationService.getAggregatedData(Collections.emptyList(), orderNumbers, Collections.emptyList());

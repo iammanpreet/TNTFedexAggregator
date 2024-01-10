@@ -20,7 +20,10 @@ public class TrackQueueApiController {
         this.apiFunction = trackApiFunction;
         this.apiQueueService = apiQueueService;
     }
-
+    /**
+     *  This method is used to trigger the POST call to the Track api with the respective parameters of the Track clients
+     * This methods enqueues the request for the Track queue, and acknowledge with the response.
+     * */
     @PostMapping("/api/track/request")
     public ResponseEntity<Object> queueTrackApiRequest(@RequestBody List<String> orderNumbers) {
         return ResponseEntity.ok().body(apiQueueService.enqueueRequest(ApiName.TRACK, orderNumbers, apiFunction));
