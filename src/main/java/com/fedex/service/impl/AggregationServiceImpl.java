@@ -41,8 +41,8 @@ public class AggregationServiceImpl implements AggregationService {
     }
 
     @SlaEnforcement(threshold = 10000)
-    public AggregationResponse getAggregatedData(List<String> trackOrderNumbers,
-                                                 List<String> shipmentOrderNumbers, List<String> pricingCountryCodes) {
+    public AggregationResponse getAggregatedData(List<String> pricingCountryCodes, List<String> trackOrderNumbers,
+                                                 List<String> shipmentOrderNumbers) {
         AggregationResponse response = new AggregationResponse();
 
         CompletableFuture<Map<String, String>> trackFuture = getTrackCompletableFuture(trackOrderNumbers);
@@ -74,7 +74,6 @@ public class AggregationServiceImpl implements AggregationService {
         return (trackOrderNumbers != null && !trackOrderNumbers.isEmpty()) ?
                 CompletableFuture
                         .supplyAsync(() -> {
-                            ;
                             return trackApiClient.getTrackingStatus(trackOrderNumbers);
                         }, executorService)
                         .completeOnTimeout(Collections.emptyMap(), apiClientConfig.getTrackTimeout(), TimeUnit.SECONDS)

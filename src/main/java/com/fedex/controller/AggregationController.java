@@ -13,7 +13,7 @@ import com.fedex.model.AggregationResponse;
 @RestController
 public class AggregationController {
 
-    private AggregationService aggregationService;
+    private final AggregationService aggregationService;
 
     public AggregationController(AggregationService aggregationService) {
         this.aggregationService = aggregationService;

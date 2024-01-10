@@ -30,3 +30,7 @@ management:
 
 slaEnforcement:
   defaultThreshold: 10000
+
+
+batch:
+  size: 2

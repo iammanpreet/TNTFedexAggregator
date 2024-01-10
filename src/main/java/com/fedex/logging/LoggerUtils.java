@@ -6,8 +6,7 @@ public class LoggerUtils {
 
     public static void logInfo(Logger logger, String message, Object... args) {
         if (logger.isInfoEnabled()) {
-            String formattedMessage = String.format(message, args);
-            logger.info(formattedMessage);
+            logger.info(message, args);
         }
     }
 
