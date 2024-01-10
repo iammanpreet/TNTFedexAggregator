@@ -16,6 +16,8 @@ Below are the steps to run the application
 git clone https://github.com/iammanpreet/TNTFedexAggregator.git
 cd TNTFedexAggregator
 
+Run mvn clean install
+
 Build the Docker image:
 
 docker build -t aggregation-service .

@@ -52,8 +52,8 @@ public class PricingApiClientImplTest extends BaseTest {
     public void testGetPricing() {
         List<String> countries = Arrays.asList("US", "CA");
 
-        Map<String, Double> expectedResponse = Collections.singletonMap("NL", 25.0);/* Your expected response */
-        ;
+        Map<String, Double> expectedResponse = Collections.singletonMap("NL", 25.0);
+
         ResponseEntity<Map<String, Double>> responseEntity = new ResponseEntity<>(expectedResponse, HttpStatus.OK);
         when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(), any(ParameterizedTypeReference.class)))
                 .thenReturn(responseEntity);

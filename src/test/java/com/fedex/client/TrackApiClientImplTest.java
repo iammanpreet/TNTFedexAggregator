@@ -55,8 +55,7 @@ public class TrackApiClientImplTest extends BaseTest {
     public void testGetTrackingStatus() {
         List<String> trackOrderNumbers = Collections.singletonList("123");
 
-        Map<String, String> expectedResponse = Collections.singletonMap("123", "In Transit");/* Your expected response */
-        ;
+        Map<String, String> expectedResponse = Collections.singletonMap("123", "In Transit");
         ResponseEntity<Map<String, String>> responseEntity = new ResponseEntity<>(expectedResponse, HttpStatus.OK);
         when(restTemplate.exchange(anyString(), any(HttpMethod.class), any(), any(ParameterizedTypeReference.class)))
                 .thenReturn(responseEntity);
