@@ -16,6 +16,11 @@ Below are the steps to run the application
 git clone https://github.com/iammanpreet/TNTFedexAggregator.git
 cd TNTFedexAggregator
 
+Find the ip of the services hosted on Docker hub using command:
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container-name>
+Replace the ip in the yml file for the client urls.
+eg: http://172.17.0.3:8080/track
+
 Run mvn clean install
 
 Build the Docker image:
