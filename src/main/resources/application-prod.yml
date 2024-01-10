@@ -1,0 +1,25 @@
+thread:
+  pool:
+    size: 3
+
+clients:
+  track:
+    api:
+      url: http://localhost/track
+    timeout: 5
+
+  shipments:
+    api:
+      url: http://localhost/shipments
+    timeout: 5
+
+  pricing:
+    api:
+      url: http://localhost/pricing
+    timeout: 5
+
+slaEnforcement:
+  defaultThreshold: 10000
+
+batch:
+  size: 5

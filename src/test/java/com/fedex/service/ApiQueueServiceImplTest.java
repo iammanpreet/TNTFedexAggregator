@@ -32,6 +32,9 @@ public class ApiQueueServiceImplTest extends BaseTest {
     private ApiFunction<AggregationResponse> apiFunction;
     @Mock
     private ApiBatchConfig apiBatchConfig;
+
+    @Mock
+    private AggregationService aggregationService;
     @InjectMocks
     private ApiQueueServiceImpl apiQueueService;
 
@@ -39,7 +42,7 @@ public class ApiQueueServiceImplTest extends BaseTest {
     void setUp() {
         MockitoAnnotations.initMocks(this);
         ExecutorService executorService = Executors.newFixedThreadPool(2);
-        apiQueueService = new ApiQueueServiceImpl(apiBatchConfig, executorService);
+        apiQueueService = new ApiQueueServiceImpl(apiBatchConfig, executorService,aggregationService);
      }
     @Test
     void testEnqueueRequestWithBatchProcessingWithRequestQueued() {

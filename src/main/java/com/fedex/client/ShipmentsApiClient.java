@@ -5,6 +5,6 @@ import java.util.Map;
 
 public interface ShipmentsApiClient {
 
-	Map<String,List<String>> getProducts(List<String> orderNumbers);
+    Map<String, List<String>> getProducts(List<String> orderNumbers);
 
 }
