@@ -9,6 +9,6 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 public class ApiBatchConfig {
-    @Value("${batch.size}")
+    @Value("${batch.size:5}")
     private int batchSize;
 }

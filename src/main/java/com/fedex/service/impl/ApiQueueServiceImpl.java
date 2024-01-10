@@ -2,20 +2,22 @@ package com.fedex.service.impl;
 
 import com.fedex.config.ApiBatchConfig;
 import com.fedex.enumeration.ApiName;
+import com.fedex.exception.ApiException;
+import com.fedex.logging.LoggerUtils;
 import com.fedex.model.AggregationResponse;
 import com.fedex.model.ApiRequest;
 import com.fedex.service.ApiFunction;
 import com.fedex.service.ApiQueueService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.*;
 
 @Service
 public class ApiQueueServiceImpl implements ApiQueueService {
+    private static final Logger logger = LoggerFactory.getLogger(ApiQueueServiceImpl.class);
 
     private final Map<ApiName, Queue<ApiRequest<AggregationResponse>>> apiQueues;
     private final ApiBatchConfig apiBatchConfig;
@@ -67,15 +69,7 @@ public class ApiQueueServiceImpl implements ApiQueueService {
         }
 
         // Execute the batched API call
-        CompletableFuture.supplyAsync(() -> apiFunction.apply(orderNumbers), executorService)
-                .whenComplete((result, throwable) -> {
-                    if (throwable != null) {
-                        // Handle errors
-                        queue.forEach(request -> request.getFuture().completeExceptionally(throwable));
-                    } else {
-                        // Complete futures with API results
-                        queue.forEach(request -> request.getFuture().complete(result));
-                    }
-                });
+        AggregationResponse response = apiFunction.apply(orderNumbers);
+        queue.forEach(request -> request.getFuture().complete(response));
     }
 }
