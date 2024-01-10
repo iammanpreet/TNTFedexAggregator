@@ -49,4 +49,18 @@ public class AggregationSLAAspect {
     private void logExecutionTime(ProceedingJoinPoint joinPoint, long executionTime) {
         LoggerUtils.logInfo(logger, "{} executed in {} ms", joinPoint.getSignature(), executionTime);
     }
+
+    @Around("execution(* com.fedex.service.impl.ApiQueueServiceImpl.enqueueRequest(..))")
+    public Object logMethodExecution(ProceedingJoinPoint joinPoint) throws Throwable {
+        String methodName = joinPoint.getSignature().toShortString();
+        logger.info("Entering method: {}", methodName);
+
+        long startTime = System.currentTimeMillis();
+        Object result = joinPoint.proceed();
+        long endTime = System.currentTimeMillis();
+
+        logger.info("Exiting method: {}. Execution time: {} ms", methodName, endTime - startTime);
+
+        return result;
+    }
 }
