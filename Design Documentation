@@ -1,0 +1,36 @@
+**Design Documentation**
+
+Stories
+AS-1: Aggregation service to invoke all client in a single network call.
+1. The solution is implemented using the template design pattern, where every client will follow a template and override the required methods based on the client's implementation.
+
+It is easier to add new clients by just extending the ApiTemplate and overriding the required methods.
+
+Design diagram:
+Added in the root folder.
+
+The request mentioned for the external clients
+GET http://<host>:8080/shipments?q=109347263,123456891
+return the response as Map<String, List<String>>. We can't create respective DTO of clients as we cannot add another key in the response of aggregation service.
+If we create Dto for respective client, we need to convert reponse to DTO and then revert in order to set the reponse to aggregation service, 
+hence its preferred to avoid the unecessary conversions.
+
+2. Created repective clients implementing the ApiTemplate to induce generic behaviour.
+3. Create an annotation SlaEnforcement to enforce SLA on the Aggregation Api, so that response will be sent as AggregationTimeoutException. (Timeout is configurable.)
+4. Individual clients timeouts are configurable and configured vua the yml files.
+5. Generic Exception Handlers, Controller advices, and logging utility is used to implement the common behaviours of the application.
+6. We can control the timeouts by restTemplates as well, by as per the requirement completableFuture timesout for the clients suits best.
+7. Executor configuration and bean is defined to handle the resources spawned in the application.
+
+
+AS-2: Enqueueing the request in the respective queues.
+1. Created the respective controllers in order to send the post request to the system.
+2. Created ApiName enum to store the names of all the external apis.
+3. Configured the Api Function for the respective ApiRequest message, so that based on the message, in a generic way we can execute the api function and process the request.
+4. Based on the batch size, we either enqueue the request or process the batch request.
+5. Responses of the batch will be asynchrously consumed via the futures and set the same in the requests.
+
+AS-3: Scheduling service
+1. Created a fixed rate scheduling service, and when the message is enqueued, at a delay of 5 sec  scheduling service will be invoked.
+2. If the batch request is performed already, then this schedule service wont be able to find the message in queue which is 5 sec older, hence wont do anything.
+3. If the batch request is yet to be processed, or the queue size if less than batch size, schedule service will set the batch size as size of queue and process the messages.
