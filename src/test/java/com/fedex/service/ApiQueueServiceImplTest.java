@@ -2,7 +2,6 @@ package com.fedex.service;
 import com.fedex.BaseTest;
 import com.fedex.config.ApiBatchConfig;
 import com.fedex.enumeration.ApiName;
-import com.fedex.exception.ApiException;
 import com.fedex.model.AggregationResponse;
 import com.fedex.service.impl.ApiQueueServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,19 +9,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class ApiQueueServiceImplTest extends BaseTest {
