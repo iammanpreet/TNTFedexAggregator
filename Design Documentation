@@ -7,7 +7,7 @@ AS-1: Aggregation service to invoke all client in a single network call.
 It is easier to add new clients by just extending the ApiTemplate and overriding the required methods.
 
 Design diagram:
-Added in the root folder.
+https://github.com/iammanpreet/TNTFedexAggregator/blob/main/AS-1%20implementation.png
 
 The request mentioned for the external clients
 GET http://<host>:8080/shipments?q=109347263,123456891
