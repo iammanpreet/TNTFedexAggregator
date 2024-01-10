@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 public class AggregationServiceImplTest extends BaseTest {
@@ -71,9 +70,9 @@ public class AggregationServiceImplTest extends BaseTest {
         CompletableFuture<Map<String, Double>> pricingFuture = CompletableFuture.supplyAsync(() -> {
             return Collections.singletonMap("NL", 25.0);
         });
-        when(trackApiClient.getTrackingStatus(eq(trackOrderNumbers))).thenReturn(trackFuture.join());
-        when(shipmentsApiClient.getProducts(eq(shipmentOrderNumbers))).thenReturn(shipmentsFuture.join());
-        when(pricingApiClient.getPricing(eq(pricingCountryCodes))).thenReturn(pricingFuture.join());
+        when(trackApiClient.getTrackingStatus(anyList())).thenReturn(trackFuture.join());
+        when(shipmentsApiClient.getProducts(anyList())).thenReturn(shipmentsFuture.join());
+        when(pricingApiClient.getPricing(anyList())).thenReturn(pricingFuture.join());
 
         AggregationResponse result = aggregationService.getAggregatedData(trackOrderNumbers, shipmentOrderNumbers, pricingCountryCodes);
         assertEquals(trackFuture.join(), result.getTrack());
@@ -90,7 +89,7 @@ public class AggregationServiceImplTest extends BaseTest {
         when(apiClientConfig.getPricingTimeout()).thenReturn(1l);
         when(apiClientConfig.getShipmentsTimeout()).thenReturn(1l);
 
-        when(trackApiClient.getTrackingStatus(eq(trackOrderNumbers))).thenAnswer(invocation -> {
+        when(trackApiClient.getTrackingStatus(anyList())).thenAnswer(invocation -> {
             Thread.sleep(2000);
             return Collections.singletonMap("123", "In Transit");
         });
@@ -98,8 +97,8 @@ public class AggregationServiceImplTest extends BaseTest {
         CompletableFuture<Map<String, List<String>>> shipmentsFuture = CompletableFuture.completedFuture(Collections.singletonMap("456", List.of("Product1", "Product2")));
         CompletableFuture<Map<String, Double>> pricingFuture = CompletableFuture.completedFuture(Collections.singletonMap("US", 25.0));
 
-        when(shipmentsApiClient.getProducts(eq(shipmentOrderNumbers))).thenReturn(shipmentsFuture.join());
-        when(pricingApiClient.getPricing(eq(pricingCountryCodes))).thenReturn(pricingFuture.join());
+        when(shipmentsApiClient.getProducts(anyList())).thenReturn(shipmentsFuture.join());
+        when(pricingApiClient.getPricing(anyList())).thenReturn(pricingFuture.join());
 
         AggregationResponse result = aggregationService.getAggregatedData(trackOrderNumbers, shipmentOrderNumbers, pricingCountryCodes);
         assertEquals(Collections.emptyMap(), result.getTrack());
@@ -118,15 +117,15 @@ public class AggregationServiceImplTest extends BaseTest {
         CompletableFuture<Map<String, String>> trackFuture = CompletableFuture.supplyAsync(() -> {
             return Collections.singletonMap("123", "In Transit");
         });
-        when(trackApiClient.getTrackingStatus(eq(trackOrderNumbers))).thenReturn(trackFuture.join());
+        when(trackApiClient.getTrackingStatus(anyList())).thenReturn(trackFuture.join());
 
         CompletableFuture<Map<String, Double>> pricingFuture = CompletableFuture.completedFuture(Collections.singletonMap("US", 25.0));
 
-        when(shipmentsApiClient.getProducts(eq(shipmentOrderNumbers))).thenAnswer(invocation -> {
+        when(shipmentsApiClient.getProducts(anyList())).thenAnswer(invocation -> {
             Thread.sleep(2000);
             return Collections.singletonMap("456", List.of("Product1", "Product2"));
         });
-        when(pricingApiClient.getPricing(eq(pricingCountryCodes))).thenReturn(pricingFuture.join());
+        when(pricingApiClient.getPricing(anyList())).thenReturn(pricingFuture.join());
 
         AggregationResponse result = aggregationService.getAggregatedData(trackOrderNumbers, shipmentOrderNumbers, pricingCountryCodes);
         assertEquals(trackFuture.join(), result.getTrack());
@@ -145,12 +144,12 @@ public class AggregationServiceImplTest extends BaseTest {
         CompletableFuture<Map<String, String>> trackFuture = CompletableFuture.supplyAsync(() -> {
             return Collections.singletonMap("123", "In Transit");
         });
-        when(trackApiClient.getTrackingStatus(eq(trackOrderNumbers))).thenReturn(trackFuture.join());
+        when(trackApiClient.getTrackingStatus(anyList())).thenReturn(trackFuture.join());
 
         CompletableFuture<Map<String, List<String>>> shipmentsFuture = CompletableFuture.completedFuture(Collections.singletonMap("456", List.of("Product1", "Product2")));
 
-        when(shipmentsApiClient.getProducts(eq(shipmentOrderNumbers))).thenReturn(shipmentsFuture.join());
-        when(pricingApiClient.getPricing(eq(trackOrderNumbers))).thenAnswer(invocation -> {
+        when(shipmentsApiClient.getProducts(anyList())).thenReturn(shipmentsFuture.join());
+        when(pricingApiClient.getPricing(anyList())).thenAnswer(invocation -> {
             Thread.sleep(2000);
             return Collections.singletonMap("US", 25.0);
         });
