@@ -3,15 +3,16 @@ package com.fedex.service.impl;
 import com.fedex.config.ApiBatchConfig;
 import com.fedex.enumeration.ApiName;
 import com.fedex.exception.ApiException;
-import com.fedex.logging.LoggerUtils;
 import com.fedex.model.AggregationResponse;
 import com.fedex.model.ApiRequest;
+import com.fedex.service.AggregationService;
 import com.fedex.service.ApiFunction;
 import com.fedex.service.ApiQueueService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -23,16 +24,29 @@ public class ApiQueueServiceImpl implements ApiQueueService {
     private final ApiBatchConfig apiBatchConfig;
     private final ExecutorService executorService;
 
-    public ApiQueueServiceImpl(ApiBatchConfig apiBatchConfig, ExecutorService executorService) {
+    private final ScheduledExecutorService scheduler;
+
+    private final AggregationService aggregationService;
+
+    public ApiQueueServiceImpl(ApiBatchConfig apiBatchConfig, ExecutorService executorService, AggregationService aggregationService) {
         this.apiBatchConfig = apiBatchConfig;
         this.executorService = executorService;
+        this.aggregationService = aggregationService;
         this.apiQueues = new ConcurrentHashMap<>();
+        this.scheduler = Executors.newScheduledThreadPool(ApiName.values().length);
         initializeQueues();
+        schedulePeriodicTasks();
     }
 
     private void initializeQueues() {
         for (ApiName apiName : ApiName.values()) {
             apiQueues.put(apiName, new ConcurrentLinkedQueue<>());
+        }
+    }
+
+    private void schedulePeriodicTasks() {
+        for (ApiName apiName : ApiName.values()) {
+            scheduler.scheduleAtFixedRate(() -> processApiRequestQueue(apiName, apiQueues.get(apiName), null), 0, 5, TimeUnit.SECONDS);
         }
     }
 
@@ -53,23 +67,52 @@ public class ApiQueueServiceImpl implements ApiQueueService {
         if (queue.size() >= apiBatchConfig.getBatchSize()) {
             processApiRequestQueue(api, queue, apiFunction);
         } else {
+            scheduleProcessApiRequestQueue(api, queue, apiFunction);
             return "Request Queued for Batching";
         }
 
-        return future.join();
+        return future;
     }
 
-    private void processApiRequestQueue(ApiName api, Queue<ApiRequest<AggregationResponse>> queue, ApiFunction<AggregationResponse> apiFunction) {
+    public void processApiRequestQueue(ApiName api, Queue<ApiRequest<AggregationResponse>> queue, ApiFunction<AggregationResponse> apiFunction) {
         // Extract order numbers and API function from the queued requests
         List<String> orderNumbers = new ArrayList<>();
-
-        for (int i = 0; i < apiBatchConfig.getBatchSize() && !queue.isEmpty(); i++) {
+        int batchSize = apiBatchConfig.getBatchSize();
+        // check if queue size is greater than 0 and oldest item in queue is 5 sec older then trigger request
+        if (!queue.isEmpty() && queue.size() < batchSize && Instant.now().isAfter(queue.peek().getTimestamp().plusSeconds(5))) {
+            batchSize = queue.size();
+        }
+        for (int i = 0; i < batchSize && !queue.isEmpty(); i++) {
             ApiRequest<AggregationResponse> apiRequest = queue.poll();
             orderNumbers.addAll(apiRequest.getOrderNumbers());
+            if (apiFunction == null) {
+                apiFunction = getApiFunction(api);
+            }
         }
 
         // Execute the batched API call
         AggregationResponse response = apiFunction.apply(orderNumbers);
         queue.forEach(request -> request.getFuture().complete(response));
+    }
+
+    private void scheduleProcessApiRequestQueue(ApiName api, Queue<ApiRequest<AggregationResponse>> queue, ApiFunction<AggregationResponse> apiFunction) {
+        scheduler.schedule(() -> processApiRequestQueue(api, queue, apiFunction), 5, TimeUnit.SECONDS);
+    }
+
+    private ApiFunction getApiFunction(ApiName api) {
+        switch (api) {
+            case PRICING: {
+                return new PricingApiFunction(aggregationService);
+            }
+            case SHIPMENTS: {
+                return new ShipmentsApiFunction(aggregationService);
+            }
+            case TRACK: {
+                return new TrackApiFunction(aggregationService);
+            }
+            default: {
+                throw new ApiException("Invalid Api Name");
+            }
+        }
     }
 }

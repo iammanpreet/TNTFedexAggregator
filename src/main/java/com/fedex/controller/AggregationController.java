@@ -23,6 +23,6 @@ public class AggregationController {
     public AggregationResponse aggregate(@RequestParam(required = false) List<String> pricing,
                                          @RequestParam(required = false) List<String> track, @RequestParam(required = false) List<String> shipments) throws TimeoutException {
 
-        return aggregationService.getAggregatedData(track, shipments, pricing);
+        return aggregationService.getAggregatedData(pricing, track, shipments);
     }
 }

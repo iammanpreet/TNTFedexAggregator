@@ -1,25 +1,9 @@
 server:
   port: 8081
 
-thread:
-  pool:
-    size: 3
-
-clients:
-  track:
-    api:
-      url: http://localhost/track
-    timeout: 5
-
-  shipments:
-    api:
-      url: http://localhost/shipments
-    timeout: 5
-
-  pricing:
-    api:
-      url: http://localhost/pricing
-    timeout: 5
+spring:
+  profiles:
+    active: dev
 
 management:
   endpoints:
@@ -28,9 +12,28 @@ management:
       exposure:
         include: health
 
+thread:
+  pool:
+    size: 3
+
+clients:
+  track:
+    api:
+      url: http://container1/track
+    timeout: 5
+
+  shipments:
+    api:
+      url: http://container1/shipments
+    timeout: 5
+
+  pricing:
+    api:
+      url: http://container1/pricing
+    timeout: 5
+
 slaEnforcement:
   defaultThreshold: 10000
 
 batch:
-  size: 2
-  timeout: 10000
+  size: 5

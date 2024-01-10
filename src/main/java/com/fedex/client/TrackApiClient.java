@@ -5,6 +5,6 @@ import java.util.Map;
 
 public interface TrackApiClient {
 
-	Map<String,String> getTrackingStatus(List<String> orderNumbers);
+    Map<String, String> getTrackingStatus(List<String> orderNumbers);
 
 }
